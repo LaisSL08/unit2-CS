@@ -109,9 +109,11 @@ Knowledge questions arise regarding the:
 ## Flow Diagrams
 
 ![1flowdiagram drawio (1)](https://github.com/user-attachments/assets/c6796788-5b1b-4519-afcb-40194442d65c)
+
 **Fig.4** this flow diagram represents a program that connects to an Arduino, continuously reads sensor data for 48 hours, extracts humidity and temperature values, and saves them in a timestamped CSV file for later analysis.
 
 ![2flowdiagram drawio](https://github.com/user-attachments/assets/5d8ee792-5459-46fd-a87e-f7112ba1107a)
+
 **Fig.5** this flow diagram represents the sequence of operations in an Arduino program that records temperature and humidity data from a DHT11 sensor for 48 hours.
 
 ## Record of Tasks
