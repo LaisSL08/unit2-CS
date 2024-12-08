@@ -149,6 +149,23 @@ Knowledge questions arise regarding the:
 # Criteria C: Development
 
 ## List of techniques used
+01. For Loop - 
+02. While Loop - 
+03. If/Else Statements - 
+04. Functions - 
+05. Lists and Dictionaries -
+06. Libraries:
+    * Comma Separated Values (CSV) Files -
+    * Serial Communication
+    * Application Programming Interface (API)
+    * Pandas
+    * Matplotlib
+    * Time
+    * Requests
+    * Numpy
+    * DHT Sensor Library (Library used in Arduino) 
+07.Try and Accept Commands - 
+08.Registering and Login into API - 
 
 ## Development
 
