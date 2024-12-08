@@ -165,9 +165,36 @@ Knowledge questions arise regarding the:
     * Numpy
     * DHT Sensor Library (Library used in Arduino) 
 07.Try and Accept Commands - 
-08.Registering and Login into API - 
+08.Registering and Login into API -
+
+## List of Libraries Used
+
+PyCharm: csv, time, datetime, requests, matplotlib, numpy, pandas, serial, api
+
+Arduino IDE: DHT Sensor Library
 
 ## Development
+
+**Code from Arduino IDE**
+
+With a view to collect and read the data from the DHT sensors, it is a must to create, verify, and upload a program to the Arduino controller. This process is realized using the Arduino Integrated Development Environment(IDE), which is a platform that connects to the Arduino boards to upload programs and communicate with them. Programs written using Arduino Software (IDE) are called sketches. These sketches are written in the text editor and are saved with the file extension .ino. Uploading the compiled code allows the sensors to collect the data needed and process properly. Below is the code we developed for this task, split by parts so we can explain its functionality:
+
+From file ```arduinocode.ino```:
+
+```.C++
+#include "DHT.h"
+
+#define DHTPIN 2     // what pin we're connected to
+#define DHTTYPE DHT11   // DHT 11
+
+// Create the dht object
+DHT dht(DHTPIN, DHTTYPE);
+static unsigned long startTime;
+```
+*** ***
+
+From file ```arduinocode.ino```:
+
 
 
 # Criteria D: Functionality
