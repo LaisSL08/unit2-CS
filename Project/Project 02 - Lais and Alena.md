@@ -253,6 +253,93 @@ void loop() {
 
 **Success Criteria: As seen in the success criteria, **
 
+### Code 1: Registering the sensors
+**When using the Pycharm, we identified the need to be able to connect with our remote server in order to back up our data. As you can see in the following code, the register of the sensors is made:**
+
+From file ``requests.py``:
+
+```.py
+from datetime import datetime
+import time
+import serial
+import requests
+
+# Arduino serial setup (update 'COM3' to your port)
+arduino = serial.Serial(port='COM3', baudrate=9600, timeout=1)
+
+# Server details
+server_ip = "192.168.4.137"  # Replace with your server IP
+user = {"username": "cabbage_field", "password": "laisalena"}
+```
+**To enable the communication between the computer and the arduino and a server, it is necessary to import the libraries. The datetime and time libraries are imported in order to manage the 48 hours of data which we will be collecting. The serial library is imported, this library is the one which will make the connection between the arduino and the computer. The request library is imported to facilitate the HTTP requests, this will allow us to send and get data from the server.**
+**The Arduino's connection with serial is setup by creating the serial object using serial.Serial. This object will be assigned to the new variable "arduino", using the serial.Serial we must add the port based on the arduino's port, the baud rate (which we set to 9600, determining the speed), and timeout of 1 second, which will define how long the program should wait.**
+**In order to interact with the server's, the IP address(192.268.4.137) is stored in the variable server_ip. The user information required for the authentication are store in the server in the user dictionary. The dictionary contain username and password for each user. In our project, we defined our username as cabbage_field and password as laisalena.**
+
+```.py
+# Register and login
+print("Registering user...")
+requests.post(f"http://{server_ip}/register", json=user)
+```
+**Next, to register the server, the program will print "Registering user...", so the user can identify what action is being done. As it follows, the program sends a POST request to the server, this request uses /register endpoint and includes the user data in JSON format. This is only necessary one time, because we don't need to register ourselves more than once. Once the request is sent, we can proceed to the next step. **
+
+```.py
+print("Logging in...")
+req = requests.post(f"http://{server_ip}/login", json=user)
+access_token = req.json()["access_token"]
+auth = {"Authorization": f"Bearer {access_token}"}
+```
+**After registering a user, we have to log in so we can access all the features of the server. The first line prints ("Logging in...") indicating to the user that the program is running. The access token, which will be provided by the server, is extracted from the JSOn response and stored in the new variable access_token, as shown in access_token = req.json()["access_token"]. In the line 4, the access token is included in the authorization header, being saved in a dictionary called auth. The dictionary assign the token to "Authorization", as shown in {"Authorization": f"Bearer {access_token}"}. All of this saved in the dictionary auth, this simplifies the process of including the authorization header in next requests**
+
+```.py
+# Create temperature and humidity sensors
+print("Creating sensors...")
+sensor_temp = {
+    "type": "Temperature",
+    "location": "hondafield",
+    "name": "sensor_cftemp",
+    "unit": "C"
+}
+sensor_hum = {
+    "type": "Humidity",
+    "location": "hondafield",
+    "name": "sensor_cfhum",
+    "unit": "%"
+}
+```
+**Then, we must create the sensors that will represent the device collecting the temperature and humidity data, we did this by creating dictionaries in python, each representing an aspect of the sensor. In the first line of the code, we print "Creating sensors...", again as a way to inform the user of the action being processed. As we follow up, we create a dictionary called sensor_temp to represent the temperature sensor, this dictionary includes the following information:**
+**-Type: Temperature**
+**-Location: hondafield**
+**-Name: sensor_cftemp**
+**-Unit: C**
+**Similarly, we create a second dictionary called sensor_hum to represent the humidity sensor, the structure is the same for both sensors, just different values are assigned. As you can see below:**
+**-Type: Humidity**
+**-Location: hondafield**
+**-Name: sensor_cfhum**
+**-Unit: %**
+**These dictionaries are the base for managing our sensor, making sure the data collected will be processed and stored. Each dictionary can be used later on to interact with the server.**
+
+```.py
+# Post sensors to the server
+req_temp = requests.post(f"http://{server_ip}/sensor/new", json=sensor_temp, headers=auth)
+sensor_temp_id = req_temp.json()["id"]
+print(f"Temperature sensor created: ID {sensor_temp_id}")
+
+req_hum = requests.post(f"http://{server_ip}/sensor/new", json=sensor_hum, headers=auth)
+sensor_hum_id = req_hum.json()["id"]
+print(f"Humidity sensor created: ID {sensor_hum_id}")
+```
+
+```.py
+
+```
+
+```.py
+
+```
+
+```.py
+
+```
 
 
 # Criteria D: Functionality
