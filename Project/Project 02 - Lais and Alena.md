@@ -175,11 +175,11 @@ Arduino IDE: DHT Sensor Library
 
 ## Development
 
-**Code from Arduino IDE**
+## Code from Arduino IDE
+
+**Success Criteria: As seen in the success criteria, the criteria 2 states that the local variables will be measured using a set of 2 sensors placed outside. One focused on collecting the temperature values and one focused on collecting the humidity data. On code, we demonstrate the sensors being used, connecting them to the arduino, collecting the data and meeting the criteria 2.**
 
 With a view to collect and read the data from the DHT sensors, it is a must to create, verify, and upload a program to the Arduino controller. This process is realized using the Arduino Integrated Development Environment(IDE), which is a platform that connects to the Arduino boards to upload programs and communicate with them. Programs written using Arduino Software (IDE) are called sketches. These sketches are written in the text editor and are saved with the file extension .ino. Uploading the compiled code allows the sensors to collect the data needed and process properly. Below is the code we developed for this task, split by parts so we can explain its functionality:
-
-**Success Criteria met in this step: As seen in the success criteria, the criteria 2 states that the local variables will be measured using a set of 2 sensors placed outside. One focused on collecting the temperature values and one focused on collecting the humidity data. On code, we demonstrate the sensors being used, connecting them to the arduino, collecting the data and meeting the criteria 2.**
 
 From file ```arduinocode.ino```:
 
@@ -248,6 +248,11 @@ void loop() {
   }
 ```
 **Code Partial Overview: After ensuring there are no errors in the sensor readings, the program will print the collected humidity and temperature values to the serial monitor. This step will help us to transfer the data to Pycharm, where we will process further and analyze it. In our project, the data will be sent in a structured format. For each reading, the program uses Serial.print() to print the label(example, "Humidity:"), the corresponding value, and the unit. To print formatted, the Serial.print() function is repeated multiple times, we chose to do this as is considered the best in arduino programming when printing multiple variables on the same line, also because it was the way we learned in class. We chose to separate the values for humidity and temperature in two split variables so later on will be easier to analyze in Pycharm, this format also makes it easier to read and understand. Finally, the Serial.print() function is used to display the humidity percentage and temperature in degrees Celsius.**
+
+## Code from Pycharm
+
+**Success Criteria: As seen in the success criteria, **
+
 
 
 # Criteria D: Functionality
