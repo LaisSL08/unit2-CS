@@ -305,6 +305,14 @@ sensor_hum = {
     "name": "sensor_cfhum",
     "unit": "%"
 }
+# Post sensors to the server
+req_temp = requests.post(f"http://{server_ip}/sensor/new", json=sensor_temp, headers=auth)
+sensor_temp_id = req_temp.json()["id"]
+print(f"Temperature sensor created: ID {sensor_temp_id}")
+
+req_hum = requests.post(f"http://{server_ip}/sensor/new", json=sensor_hum, headers=auth)
+sensor_hum_id = req_hum.json()["id"]
+print(f"Humidity sensor created: ID {sensor_hum_id}")
 ```
 **Then, we must create the sensors that will represent the device collecting the temperature and humidity data, we did this by creating dictionaries in python, each representing an aspect of the sensor. In the first line of the code, we print "Creating sensors...", again as a way to inform the user of the action being processed. As we follow up, we create a dictionary called sensor_temp to represent the temperature sensor, this dictionary includes the following information:**
 **-Type: Temperature**
@@ -318,30 +326,197 @@ sensor_hum = {
 **-Unit: %**
 **These dictionaries are the base for managing our sensor, making sure the data collected will be processed and stored. Each dictionary can be used later on to interact with the server.**
 
-```.py
-# Post sensors to the server
-req_temp = requests.post(f"http://{server_ip}/sensor/new", json=sensor_temp, headers=auth)
-sensor_temp_id = req_temp.json()["id"]
-print(f"Temperature sensor created: ID {sensor_temp_id}")
+### Code 2: Solution X CSV file
 
-req_hum = requests.post(f"http://{server_ip}/sensor/new", json=sensor_hum, headers=auth)
-sensor_hum_id = req_hum.json()["id"]
-print(f"Humidity sensor created: ID {sensor_hum_id}")
+```.py
+import serial
+import csv
+from datetime import datetime
+
+now = datetime.now()
+data_file_name = 'Data_'+now.strftime("%Y%m%d%H%M%S")+'.csv'
+with open(data_file_name, mode='w', newline='') as file:
+    writer = csv.writer(file)
+    writer.writerow(["Time (s)", "Humidity (%)", "Temperature (C)" ])  # Write header
+```
+****
+
+```.py
+print("Time (s)", "Humidity (%)", "Temperature (C)")
+# Replace 'COM5' with the actual port your Arduino is connected to
+# Also, update the baud rate if necessary (default is 9600)
+arduino = serial.Serial(port='COM5', baudrate=9600, timeout=5)
+time = 0
+##for i in range(5):
+line = arduino.readline().decode('utf-8')
 ```
 
 ```.py
+while not line.startswith('48-hour'):
+    line = arduino.readline().decode('utf-8')
+    print(time, line, end="")
+    if line.startswith('Humidity: '):
+        #print(line[10:15], line[31:36])
+        with open(data_file_name, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([time ,line[10:15], line[31:36]])
 
+    time += 2
+
+print("finish")
+arduino.close()
+```
+
+
+### Code 3: Graphs and Visual Representation
+
+```.py
+from matplotlib import pyplot as plt
+import pandas as pd
+from datetime import datetime
+import numpy as np
+import requests
+
+start_datetime = datetime(2024, 12, 6, 21, 56)
+window_size = 1000
 ```
 
 ```.py
+choose_data = input("Select a (L)ocal (default) or (R)emote: \n")
 
+if choose_data.lower().startswith('r') :
+    print('Remote data')
+    server_ip = '192.168.4.137'
+
+    temperature_id = 10
+    humidity_id = 11
+    data_label = 'Remote Data'
+
+    request = requests.get(f"http://{server_ip}/readings")
+    data = request.json()
+    #
+    # data = data1
+    #
+    sensors = data['readings'][0]
 ```
 
 ```.py
+temperature_values = [s['value'] for s in sensors if s['sensor_id'] == temperature_id]
+    index_data = [datetime.strptime(s['datetime'][:16], "%Y-%m-%dT%H:%M") for s in sensors if s['sensor_id'] == temperature_id]
 
+    humidity_list = [s['value'] for s in sensors if s['sensor_id'] == humidity_id]
+    # humidity_index = [datetime.strptime(s['datetime'][:16], "%Y-%m-%dT%H:%M") for s in sensors if s['sensor_id'] == humidity_id]
+    # time = [datetime.strftime(s['datetime'][:16], "%Y-%m-%dT%H:%M") for s in sensors if s['sensor_id'] == temperature_id]
+    # time =
+    time = [0] + [(index_data[i] - index_data[0]).seconds for i in range(1, len(index_data))]
+
+    df = pd.DataFrame({'Time (s)':time,'Humidity (%)':humidity_list,'Temperature (ºC)':temperature_values},
+                      index=index_data)
 ```
 
+```.py
+else:
+    print('Local data')
+    df = pd.read_csv('Data_20241206100513.csv')
+    time_local = pd.date_range(start=start_datetime, periods=df.shape[0], freq='2s')
+    df.index = time_local
+    data_label = 'Local Data'
+```
 
+```.py
+choose_measure = input("Select measure (T)emperature (default) or (H)umidity: \n")
+
+if choose_measure.lower().startswith('h'):
+    col = 1
+else:
+    col = 2
+
+
+choose = input("Select a graph: \n"
+               "\tA-Original\n"
+               "\tB-Averaged\n"
+               "\tC-Standard Deviation\n"
+               "\tD-Quadratic Model\n"
+               "\tE-Quatric Model\n"
+               "\tF-Quadratic Model for next 12 hours\n"
+               "\tG-Quatric Model for next 12 hours\n"
+               )
+```
+
+```.py
+subsequent_time = pd.date_range(start= df.index[-1], periods = 12*60*30, freq='2s')
+```
+
+```.py
+if choose.upper() == 'A':
+    # Original
+    plt.plot(df.iloc[:, col],'r')
+    plt.legend(['Original'])
+```
+```.py
+elif choose.upper() == 'B':
+    # Averaged
+    plt.plot(df.rolling(window=window_size).mean().iloc[:, col], 'k')
+    plt.legend(['Averaged'])
+```
+```.py
+elif choose.upper() == 'C':
+    # Standard Deviation Temperature
+    plt.plot(df.rolling(window=window_size).std().iloc[:, col], 'b')
+    plt.legend(['Standard Deviation'])
+```
+```.py
+elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or choose.upper() == 'G':
+    if choose.upper() == 'D' or choose.upper() == 'F':
+        # Quadratic Model
+        coeff = np.polyfit(df.iloc[:, 0], df.iloc[:, col], 2)
+    else:
+        # Quatric Model
+        coeff = np.polyfit(df.iloc[:, 0], df.iloc[:, col], 4)
+
+    model = np.poly1d(coeff)
+
+    subsequent_time = pd.date_range(start=time_local[-1], periods=12 * 60 * 30, freq='2s')
+    t = [2 * i for i in range(12 * 60 * 30)]
+```
+```.py
+ if choose.upper() == 'D':
+        # Quadratic Model
+        plt.plot(df.iloc[:, col], 'r')
+        plt.plot(df.index, model(df.iloc[:, 0]), 'g')
+        plt.legend(['Original', f'Quadratic: {coeff[0]}t²+{coeff[1]}t+{coeff[2]}'])
+```
+```.py
+    elif choose.upper() == 'E':
+        # Quatric Model
+        plt.plot(df.iloc[:, col], 'r')
+        plt.plot(df.index, model(df.iloc[:, 0]), 'g')
+        plt.legend(['Original', f'Quatric: {coeff[0]}$t^4$+{coeff[1]}t³+{coeff[2]}t²+{coeff[3]}t+{coeff[4]}'])
+```
+```.py
+ elif choose.upper() == 'F':
+        # Quadratic Model for next 12 hours
+        plt.plot(subsequent_time, model(t), 'g')
+        plt.legend([f'Quadratic: {coeff[0]}t²+{coeff[1]}t+{coeff[2]}'])
+```
+```.py
+    elif choose.upper() == 'G':
+        # Quatric Model for next 12 hours
+        plt.plot(subsequent_time, model(t), 'g')
+        plt.legend([f'Quatric: {coeff[0]}$t^4$+{coeff[1]}t³+{coeff[2]}t²+{coeff[3]}t+{coeff[4]}'])
+```
+```.py
+else:
+    print('No available option was chose. Ending!')
+```
+```.py
+plt.grid()
+plt.xticks(rotation=45)
+plt.xlabel('Date time (day-hours)')
+plt.ylabel(df.columns[col])
+plt.title(data_label)
+plt.show()
+```
 # Criteria D: Functionality
 
 A 7 min video demonstrating the proposed solution with narration
