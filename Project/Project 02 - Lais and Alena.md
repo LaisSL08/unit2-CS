@@ -328,6 +328,7 @@ print(f"Humidity sensor created: ID {sensor_hum_id}")
 
 ### Code 2: Solution X CSV file
 
+From file ```solutioncsv.py```
 ```.py
 import serial
 import csv
@@ -339,7 +340,8 @@ with open(data_file_name, mode='w', newline='') as file:
     writer = csv.writer(file)
     writer.writerow(["Time (s)", "Humidity (%)", "Temperature (C)" ])  # Write header
 ```
-****
+**In order to save all the data we have been collecting during the experiment, we have to create a CSV file to store the measurements in an organized way. We did by importint the csv library for writing the csv file and the datetime library to create and manage the time. We also imported the pyserial library in order to connect with the arduino and collect the data. In the line 5, we assigned the variable now to the datetime.now() function, which is used to get the current date and time. Following up, the strftime() method was used to format the current time and date throughout the experiment in the format of YYYYMMDDHHMMSS(year, month, day, hour, minute, seconds). The string is connected to Data_ and the file extension .csv, as you can see in data_file_name = 'Data_'+now.strftime("%Y%m%d%H%M%S")+'.csv'. This is a step that helps to identify the data files being created.**
+**Then, we open a new file with this name in write mode(thats why is 'w') using the function open(), also adding newline='' by then end to make sure the file will print one set of data per line. Inside the with open, we use the function csv.writer(), this is stored in a variable and will be used to write data to the file. Finally, we use the write.writerow() function to write the header of the csv file as "Time (s)", "Humidity (%)", "Temperature (C)", this will help organize the data collected.**
 
 ```.py
 print("Time (s)", "Humidity (%)", "Temperature (C)")
@@ -350,7 +352,7 @@ time = 0
 ##for i in range(5):
 line = arduino.readline().decode('utf-8')
 ```
-
+**In this part of the code, we start by using the print() command, again to create a header for the data being read. The header must show "Time (s)," "Humidity (%)," and "Temperature (C)" to indicate each type of data being collected. This makes the data more organized and easier to analyze. Next, we must start a connection with the arduino, so we use the serial.Serial() function, again we have to specify the port which the arduino is connec**
 ```.py
 while not line.startswith('48-hour'):
     line = arduino.readline().decode('utf-8')
@@ -388,8 +390,8 @@ if choose_data.lower().startswith('r') :
     print('Remote data')
     server_ip = '192.168.4.137'
 
-    temperature_id = 10
-    humidity_id = 11
+    temperature_id = 409
+    humidity_id = 410
     data_label = 'Remote Data'
 
     request = requests.get(f"http://{server_ip}/readings")
@@ -547,6 +549,18 @@ plt.ylabel(df.columns[col])
 plt.title(data_label)
 plt.show()
 ```
+## Overall Conclusion
+
+I WILL EDIT
+
+When analyzing the graphs, we noticed that the temperature in the cabbage fields varied between -4°C and 10°C, while the relative humidity fluctuated between 90% and 30%. Scientifically, it is known that most cabbage varieties (genus Brassica oleracea) can withstand short periods of frost, with minimum temperatures of -6°C, and some specific varieties can tolerate up to -10°C. However, prolonged exposure to temperatures below -5°C, for periods of 30 to 60 days, can be highly damaging, directly affecting plant development and crop quality. This is because these conditions can induce the process of early formation of flower stalks (called bolting), reducing the commercial value of the final product. Ideal cabbage growth occurs at an average daily temperature of around 17°C. According to studies, the temperature range considered ideal for cabbage development is 10°C to 24°C, with temperatures above 24°C slowing down development and increasing the risk of defects such as cracking and loss of firmness in cabbage heads. As for humidity, the ideal range for growing cabbage is between 60% and 90%. The graphs analyzed indicate that, for most of the time, relative humidity remained within suitable limits for the crop, especially at night, when levels tend to be higher. Studies show that humidity below 50% can increase transpiration and reduce the efficiency of water use by plants, while humidity above 90% for long periods favors the development of fungal diseases such as Alternaria and Peronospora brassicae. Based on this data, it is possible to conclude that the main focus should be on monitoring and controlling temperature, as it is the most critical factor for the health and performance of cabbage crops. To prevent damage, it is recommended to implement thermal control systems in greenhouses, such as heating on cold nights and adequate ventilation on hot days. In addition, automated monitoring systems can help maintain optimum temperature and humidity levels, thus ensuring a high-quality harvest. These recommendations are in line with modern agricultural research into the physiological needs of cabbage and with management strategies in regions with similar climatic variations.
+
+## Scientific Poster demonstrating the research
+
+![1  Temperature and humidity data collection Using the Arduino and the DHT 11 sensor, we measured the temperature and humidity  The laptop and Arduino are placed on the windowsill so that the DHT 1](https://github.com/user-attachments/assets/0f10426a-66bc-43ac-8a49-ddd443ccf419)
+
+
+
 # Criteria D: Functionality
 
 A 7 min video demonstrating the proposed solution with narration
