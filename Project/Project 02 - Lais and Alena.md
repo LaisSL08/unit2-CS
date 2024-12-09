@@ -453,18 +453,30 @@ if choose.upper() == 'A':
     plt.plot(df.iloc[:, col],'r')
     plt.legend(['Original'])
 ```
+![Local_Temperature_Original](https://github.com/user-attachments/assets/9935ce65-41b8-4783-9272-0ff723f3b32c)
+
+![Local_Humidity_Original](https://github.com/user-attachments/assets/fe927ed4-fb8b-47ba-9fbc-03d0513e15dd)
+
 ```.py
 elif choose.upper() == 'B':
     # Averaged
     plt.plot(df.rolling(window=window_size).mean().iloc[:, col], 'k')
     plt.legend(['Averaged'])
 ```
+![Local_Temperature_Averaged](https://github.com/user-attachments/assets/0b165ce4-4175-4449-a0da-321584ffea2d)
+
+![Local_Humidity_Averaged](https://github.com/user-attachments/assets/fdaaef7a-3130-4161-bf40-c84bc11f5a5f)
+
 ```.py
 elif choose.upper() == 'C':
     # Standard Deviation Temperature
     plt.plot(df.rolling(window=window_size).std().iloc[:, col], 'b')
     plt.legend(['Standard Deviation'])
 ```
+![Local_Temperature_Std](https://github.com/user-attachments/assets/efabfd1a-f5ad-48ba-8592-8160ae1d76c5)
+
+![Local_Humidity_Std](https://github.com/user-attachments/assets/5f91c7da-2191-4c24-a498-5b9497915688)
+
 ```.py
 elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or choose.upper() == 'G':
     if choose.upper() == 'D' or choose.upper() == 'F':
@@ -479,6 +491,7 @@ elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or 
     subsequent_time = pd.date_range(start=time_local[-1], periods=12 * 60 * 30, freq='2s')
     t = [2 * i for i in range(12 * 60 * 30)]
 ```
+
 ```.py
  if choose.upper() == 'D':
         # Quadratic Model
@@ -486,6 +499,10 @@ elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or 
         plt.plot(df.index, model(df.iloc[:, 0]), 'g')
         plt.legend(['Original', f'Quadratic: {coeff[0]}t²+{coeff[1]}t+{coeff[2]}'])
 ```
+![Local_Temperature_Quadratic](https://github.com/user-attachments/assets/1f893fda-4f1f-4812-9122-e8b8c1357f3f)
+
+![Local_Humidity_Quadratic](https://github.com/user-attachments/assets/d4c42e8d-530a-4fc4-b45a-bedd7e1a6247)
+
 ```.py
     elif choose.upper() == 'E':
         # Quatric Model
@@ -493,18 +510,31 @@ elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or 
         plt.plot(df.index, model(df.iloc[:, 0]), 'g')
         plt.legend(['Original', f'Quatric: {coeff[0]}$t^4$+{coeff[1]}t³+{coeff[2]}t²+{coeff[3]}t+{coeff[4]}'])
 ```
+![Local_Temperature_Quatric](https://github.com/user-attachments/assets/eb0ac129-b76a-42fd-a7c3-c8f52e53f721)
+
+![Local_Humidity_Quatric](https://github.com/user-attachments/assets/19e0ea57-7783-440e-a45b-20ff94481c27)
+
+
 ```.py
  elif choose.upper() == 'F':
         # Quadratic Model for next 12 hours
         plt.plot(subsequent_time, model(t), 'g')
         plt.legend([f'Quadratic: {coeff[0]}t²+{coeff[1]}t+{coeff[2]}'])
 ```
+![Local_Temperature_Quadratic_Next12h](https://github.com/user-attachments/assets/313199aa-f17c-4947-9e9a-0787814e2c1b)
+
+![Local_Humidity_Quadratic_Next12h](https://github.com/user-attachments/assets/8d91fe85-43a0-47df-b1af-d3197a596833)
+
 ```.py
     elif choose.upper() == 'G':
         # Quatric Model for next 12 hours
         plt.plot(subsequent_time, model(t), 'g')
         plt.legend([f'Quatric: {coeff[0]}$t^4$+{coeff[1]}t³+{coeff[2]}t²+{coeff[3]}t+{coeff[4]}'])
 ```
+![Local_Temperature_Quatric_Next12h](https://github.com/user-attachments/assets/ff778839-3aa0-4717-82b6-804ad7cef433)
+
+![Local_Humidity_Quatric_Next12h](https://github.com/user-attachments/assets/a5bd62cd-c179-45a3-a2b2-4e71243d1dae)
+
 ```.py
 else:
     print('No available option was chose. Ending!')
