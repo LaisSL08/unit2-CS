@@ -352,7 +352,8 @@ time = 0
 ##for i in range(5):
 line = arduino.readline().decode('utf-8')
 ```
-**In this part of the code, we start by using the print() command, again to create a header for the data being read. The header must show "Time (s)," "Humidity (%)," and "Temperature (C)" to indicate each type of data being collected. This makes the data more organized and easier to analyze. Next, we must start a connection with the arduino, so we use the serial.Serial() function, again we have to specify the port which the arduino is connec**
+**In this part of the code, we start by using the print() command, again to create a header for the data being read. The header must show "Time (s)," "Humidity (%)," and "Temperature (C)" to indicate each type of data being collected. This makes the data more organized and easier to analyze. Next, we must start a connection with the arduino, so we use the serial.Serial() function, again we have to specify the port which the arduino is connected to the arduino, in this case was the COM5. Again, we sete the baud rate to 9600 which will match the data transmitted between the arduino and the computer. And a timeout of 5 seconds before moving on. After finalizing this step, we have the variable named time, which we will set its value to 0, this variable is the one that will monitor the real time values. Finally, we end this step using the function readline() to read the data collected by the arduino, and as the data is in bytes we use the function .decode('utf-8') to make the data humanly understandable. This whole process will ensure we have the data for time, humidity, and temperature without any mistakes.**
+
 ```.py
 while not line.startswith('48-hour'):
     line = arduino.readline().decode('utf-8')
@@ -368,6 +369,7 @@ while not line.startswith('48-hour'):
 print("finish")
 arduino.close()
 ```
+**As require by the success criteria, we must collect data for 48-hours so we start this part of the code with a loop which will check if the current line of data doesn't start with the string '48-hour'. This will make sure the program will read for all the required time and process until the 48 hours collection is finished. Then inside the loop, our program reads the line of data using the function read.line(), which retrieves the next avaiable line. The line then is decoded from bytes into a UTF-8 string as you can see in the code before. The program will print the current time in seconds along with the data collected. If the line starts with 'Humidity: ', for example, the program will get specific parts of the line of collected data, so the humidity value. These values are then written into the csv file, using the csv.writer function, this will make sure we won't miss anything and all data will be recorded. The time vvariable is only to give some time between each reading, in this case 2 seconds. Finally, when the loop of 48 hours exit, the program will print "finish".**
 
 
 ### Code 3: Graphs and Visual Representation
@@ -555,11 +557,9 @@ I WILL EDIT
 
 When analyzing the graphs, we noticed that the temperature in the cabbage fields varied between -4°C and 10°C, while the relative humidity fluctuated between 90% and 30%. Scientifically, it is known that most cabbage varieties (genus Brassica oleracea) can withstand short periods of frost, with minimum temperatures of -6°C, and some specific varieties can tolerate up to -10°C. However, prolonged exposure to temperatures below -5°C, for periods of 30 to 60 days, can be highly damaging, directly affecting plant development and crop quality. This is because these conditions can induce the process of early formation of flower stalks (called bolting), reducing the commercial value of the final product. Ideal cabbage growth occurs at an average daily temperature of around 17°C. According to studies, the temperature range considered ideal for cabbage development is 10°C to 24°C, with temperatures above 24°C slowing down development and increasing the risk of defects such as cracking and loss of firmness in cabbage heads. As for humidity, the ideal range for growing cabbage is between 60% and 90%. The graphs analyzed indicate that, for most of the time, relative humidity remained within suitable limits for the crop, especially at night, when levels tend to be higher. Studies show that humidity below 50% can increase transpiration and reduce the efficiency of water use by plants, while humidity above 90% for long periods favors the development of fungal diseases such as Alternaria and Peronospora brassicae. Based on this data, it is possible to conclude that the main focus should be on monitoring and controlling temperature, as it is the most critical factor for the health and performance of cabbage crops. To prevent damage, it is recommended to implement thermal control systems in greenhouses, such as heating on cold nights and adequate ventilation on hot days. In addition, automated monitoring systems can help maintain optimum temperature and humidity levels, thus ensuring a high-quality harvest. These recommendations are in line with modern agricultural research into the physiological needs of cabbage and with management strategies in regions with similar climatic variations.
 
-## Scientific Poster demonstrating the research
+## Scientific Poster
 
 ![1  Temperature and humidity data collection Using the Arduino and the DHT 11 sensor, we measured the temperature and humidity  The laptop and Arduino are placed on the windowsill so that the DHT 1](https://github.com/user-attachments/assets/0f10426a-66bc-43ac-8a49-ddd443ccf419)
-
-
 
 # Criteria D: Functionality
 
