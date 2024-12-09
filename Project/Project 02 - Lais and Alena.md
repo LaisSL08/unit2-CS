@@ -179,6 +179,8 @@ Arduino IDE: DHT Sensor Library
 
 With a view to collect and read the data from the DHT sensors, it is a must to create, verify, and upload a program to the Arduino controller. This process is realized using the Arduino Integrated Development Environment(IDE), which is a platform that connects to the Arduino boards to upload programs and communicate with them. Programs written using Arduino Software (IDE) are called sketches. These sketches are written in the text editor and are saved with the file extension .ino. Uploading the compiled code allows the sensors to collect the data needed and process properly. Below is the code we developed for this task, split by parts so we can explain its functionality:
 
+**Success Criteria met in this step: As seen in the success criteria, the criteria 2 states that the local variables will be measured using a set of 2 sensors placed outside. One focused on collecting the temperature values and one focused on collecting the humidity data. On code, we demonstrate the sensors being used, connecting them to the arduino, collecting the data and meeting the criteria 2.**
+
 From file ```arduinocode.ino```:
 
 ```.C++
@@ -192,8 +194,6 @@ DHT dht(DHTPIN, DHTTYPE);
 static unsigned long startTime;
 ```
 **Code Partial Overview: In the first line of the code, we must include the DHT.h library, in this case we will be using the Adafruit DHT Sensor Library. This library is essential for the program as it makes the arduino to identify the and send the commands to the DHT sensors connected to it. In the lines 3 and 4, we defined the pin the sensor is connected to and the type of sensor it is being used in this case scenario. The sensors being used for our project are the DHT11 type, and they are connected to pin 2. The pin and sensor can be seen in the fig.2 located in the Criteria B. On the line 7, the sensor's identity is created so later on the sensor can be called on other programs. Finally, on the line 8, the variable "startTime" is declared and assigned to the type Unsigned long, which permits the variable to store a large amount of non-negative integer values. The word static ensures that the variable retainsits value between function calls. This last line is used to store the timestamp of the data collect, to be exact the start of the collection.**
-
-**Success Criteria met in this step: As seen in the success criteria, the criteria 2 states that the local variables will be measured using a set of 2 sensors placed outside. One focused on collecting the temperature values and one focused on collecting the humidity data. On this line of code, we demonstrate the sensors being used, connecting them to the arduino and meeting the criteria 2.**
 
 ```.C++
 void setup() {
@@ -226,8 +226,28 @@ void loop() {
   float t = dht.readTemperature();
 ```
 
+**Code Partial Overview: In this part, a loop is intiated to collect and record the data from the sensors and monitor the time. As shown in line 4, first the program checks whether the total time has exceeded 48 hours(the comment demonstrates the calculation as 48 x 60 x 60 x 1000(milliseconds)). It does rgar by comparing the difference between the current time and the stored in the variable startTime. If the time of 48 hours has passes, the program prints a message "48-hour recording complete", and it stops the program by entering an infinite loop (while(1)). Next, the program requests the arduino to wair for 2000 milliseconds, or 2 seconds, between each collection using delay(2000). This delay helps the data collection to be more effective, excluding unnecessary readings and avoiding glitches. Finally, the program reads the humidity and temperature data from the dht sensor, storing the values in the real number variables h(for humidity) and t (temperature), respectively.**
 
+```.C++
+  if (isnan(h) || isnan(t)) {
+    Serial.println("Failed to read from DHT sensor!");
+  }else 
+```
+**Code Partial Overview: Within the loop, the program will verify if the DHT sensor readings are valid. In the If statement, the program uses the isnan() function to check if the humidity or the temperature value is not a number. If the value is considered invalid, the program will print "Failed to read from DHT sensor!" to the serial monitor. This step makes sure we won't have any mistakes on the data collection.**
 
+```.C++
+ {
+ // Print readings to Serial Monitor
+ Serial.print("Humidity: ");
+ Serial.print(h);
+ Serial.print(" %\t");
+ Serial.print("Temperature: ");
+ Serial.print(t);
+ Serial.println(" *C ");
+  }
+  }
+```
+**Code Partial Overview: **
 
 
 # Criteria D: Functionality
