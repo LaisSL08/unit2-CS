@@ -247,7 +247,7 @@ void loop() {
   }
   }
 ```
-**Code Partial Overview: **
+**Code Partial Overview: After ensuring there are no errors in the sensor readings, the program will print the collected humidity and temperature values to the serial monitor. This step will help us to transfer the data to Pycharm, where we will process further and analyze it. In our project, the data will be sent in a structured format. For each reading, the program uses Serial.print() to print the label(example, "Humidity:"), the corresponding value, and the unit. To print formatted, the Serial.print() function is repeated multiple times, we chose to do this as is considered the best in arduino programming when printing multiple variables on the same line, also because it was the way we learned in class. We chose to separate the values for humidity and temperature in two split variables so later on will be easier to analyze in Pycharm, this format also makes it easier to read and understand. Finally, the Serial.print() function is used to display the humidity percentage and temperature in degrees Celsius.**
 
 
 # Criteria D: Functionality
