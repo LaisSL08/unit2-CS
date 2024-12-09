@@ -191,9 +191,41 @@ From file ```arduinocode.ino```:
 DHT dht(DHTPIN, DHTTYPE);
 static unsigned long startTime;
 ```
-**Code Overview: In the first line of the code, we must include the DHT.h library, in this case we will be using the Adafruit DHT Sensor Library. This library is essential for the program as it makes the arduino to identify the and send the commands to the DHT sensors connected to it. In the lines 3 and 4, we defined the pin the sensor is connected to and the type of sensor it is being used in this case scenario. The sensors being used for our project are the DHT11 type, and they are connected to pin 2. The pin and sensor can be seen in the fig.2 located in the Criteria B. On the line 7, the sensor's identity is created so later on the sensor can be called on other programs. Finally, on the line 8, the variable "startTime" is declared and assigned to the type Unsigned long, which permits the variable to store a large amount of non-negative integer values. The word static ensures that the variable retainsits value between function calls. This last line is used to store the timestamp of the data collect, to be exact the start of the collection.**
+**Code Partial Overview: In the first line of the code, we must include the DHT.h library, in this case we will be using the Adafruit DHT Sensor Library. This library is essential for the program as it makes the arduino to identify the and send the commands to the DHT sensors connected to it. In the lines 3 and 4, we defined the pin the sensor is connected to and the type of sensor it is being used in this case scenario. The sensors being used for our project are the DHT11 type, and they are connected to pin 2. The pin and sensor can be seen in the fig.2 located in the Criteria B. On the line 7, the sensor's identity is created so later on the sensor can be called on other programs. Finally, on the line 8, the variable "startTime" is declared and assigned to the type Unsigned long, which permits the variable to store a large amount of non-negative integer values. The word static ensures that the variable retainsits value between function calls. This last line is used to store the timestamp of the data collect, to be exact the start of the collection.**
 
-**Success Criteria met in this step: As seen in the success criteria, the criteria 2 states that the local variables will be measured using a set of 2 sensors placed outside. One focused on collecting the temperature values and one focused on collecting the humidity data. On this line of code, we demonstrate the sensors being used, connecting them to the arduino and meeting the criteria 2**
+**Success Criteria met in this step: As seen in the success criteria, the criteria 2 states that the local variables will be measured using a set of 2 sensors placed outside. One focused on collecting the temperature values and one focused on collecting the humidity data. On this line of code, we demonstrate the sensors being used, connecting them to the arduino and meeting the criteria 2.**
+
+```.C++
+void setup() {
+  Serial.begin(9600);
+  while (!Serial) delay(10); // Wait for Serial monitor to be ready
+  // Serial.println("DHTxx start!");
+
+  dht.begin();
+  startTime = millis();
+}
+```
+
+**Code Partial Overview: Next, in this section, we define the setup of the arduino, which is executed once the arduino code is uploaded and ran. On the second line of this code, we start the serial communication between the arduino and the computer, using Serial.begin(9600). This command makes the baud rate, which is the data rate in bits per second, be 9600 enabling the arduino to send and receive data. On the line 3, we used a while loop to make sure the serial is ready before starting the process. The loop checks the serial interface using !Serial and pauses for 10 milliseconds using delay(10) until the serial is working. This helps to ensure the process will flow without any errors, as some serial interfaces require time to initialize. Next, we start the DHT sensor by typing the command dht.begin(), this prepares the sensor to take readings. Finally, we record the time in milliseconds using millis() and store in the startTime variable.**
+
+```.C++
+void loop() {
+  // Record for 48 hours (48 * 60 * 60 * 1000 milliseconds)
+  //static unsigned long startTime = millis();
+  if (millis() - startTime > 48 * 60 * 60 * 1000UL) {
+  //if (millis() - startTime > 10 * 1000UL) {  // Short test
+    Serial.println("48-hour recording complete.");
+    while (1); // Stop the program after 48 hours
+  }
+
+  // Wait 2 second between measurements
+  delay(2000);
+
+  // Reading temperature or humidity takes about 250 milliseconds!
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+```
+
 
 
 
