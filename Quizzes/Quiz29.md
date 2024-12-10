@@ -2,8 +2,6 @@
 
 ![Captura de tela 2024-12-10 051816](https://github.com/user-attachments/assets/092411a5-e98d-4d99-933b-72b572c5e85d)
 
-## Paper Work
-
 ## Code
 
 ```py
