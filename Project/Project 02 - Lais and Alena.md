@@ -181,7 +181,6 @@ Arduino IDE: DHT Sensor Library
 
 With a view to collect and read the data from the DHT sensors, it is a must to create, verify, and upload a program to the Arduino controller. This process is realized using the Arduino Integrated Development Environment(IDE), which is a platform that connects to the Arduino boards to upload programs and communicate with them. Programs written using Arduino Software (IDE) are called sketches. These sketches are written in the text editor and are saved with the file extension .ino. Uploading the compiled code allows the sensors to collect the data needed and process properly. Below is the code we developed for this task, split by parts so we can explain its functionality:
 
-From file ```arduinocode.ino```:
 
 ```.C++
 #include "DHT.h"
@@ -256,7 +255,6 @@ void loop() {
 ### Code 1: Registering the sensors
 **When using the Pycharm, we identified the need to be able to connect with our remote server in order to back up our data. As you can see in the following code, the register of the sensors is made:**
 
-From file ``requests.py``:
 
 ```.py
 from datetime import datetime
@@ -328,7 +326,6 @@ print(f"Humidity sensor created: ID {sensor_hum_id}")
 
 ### Code 2: Solution X CSV file
 
-From file ```solutioncsv.py```
 ```.py
 import serial
 import csv
@@ -371,6 +368,8 @@ arduino.close()
 ```
 **As require by the success criteria, we must collect data for 48-hours so we start this part of the code with a loop which will check if the current line of data doesn't start with the string '48-hour'. This will make sure the program will read for all the required time and process until the 48 hours collection is finished. Then inside the loop, our program reads the line of data using the function read.line(), which retrieves the next avaiable line. The line then is decoded from bytes into a UTF-8 string as you can see in the code before. The program will print the current time in seconds along with the data collected. If the line starts with 'Humidity: ', for example, the program will get specific parts of the line of collected data, so the humidity value. These values are then written into the csv file, using the csv.writer function, this will make sure we won't miss anything and all data will be recorded. The time vvariable is only to give some time between each reading, in this case 2 seconds. Finally, when the loop of 48 hours exit, the program will print "finish".**
 
+![Captura de tela 2024-12-09 012339](https://github.com/user-attachments/assets/a49d9339-78e7-4846-aba5-86ec64727657)
+
 
 ### Code 3: Graphs and Visual Representation
 
@@ -384,6 +383,7 @@ import requests
 start_datetime = datetime(2024, 12, 6, 21, 56)
 window_size = 1000
 ```
+**The code above aims to set up the necessary tools to process and analyze data. First, it imports the libraries we need to handle data, time, and plotting. The matplotlib.pyplot library is used for creating graphs, pandas is used for managing and analyzing data, and datetime helps work with specific dates and times. Additionally, numpy is imported for numerical operations, and requests is for getting the data from the server.Then we define the variable start_datetime to december 6, 2024 at 21:56. Finally, window_size is set to 1000, which could indicate a chunk of data or a range for analysis. This setup will be used to analyze the temperature or humidity. However, in the case of the Karuizawa weather data, the server data wasn't available when local measurements were taken.**
 
 ```.py
 choose_data = input("Select a (L)ocal (default) or (R)emote: \n")
@@ -403,6 +403,7 @@ if choose_data.lower().startswith('r') :
     #
     sensors = data['readings'][0]
 ```
+**In order to collect the temperature and humidity values from the remote server, which in our case wasn't avaiable, along with the local measurements, we added the function to get the data from the specific server. However the code depends on the servers avaiability, and during the time we collected, it wasn't avaiable. Next, the user is requested to select between a local and remote data with choose_data = input("Select a (L)ocal (default) or (R)emote: \n"), if the user press r then the computer identifies the remote option. For the remote data, the server previously mentioned is required (192.168.4.137) is used to request data, the requests.get function gets the readings from the server and the server response is expected to be JSON format, and the json() method extracts the data for processing later. The variable sensors is assigned to the first element on the list.**
 
 ```.py
 temperature_values = [s['value'] for s in sensors if s['sensor_id'] == temperature_id]
@@ -418,6 +419,32 @@ temperature_values = [s['value'] for s in sensors if s['sensor_id'] == temperatu
                       index=index_data)
 ```
 
+**The code above processes the data in order to organize the temperature and humidity readings with the time they were collected. This part of the code is a bit more complicated so we will split in parts in order to explain better:**
+
+```.py
+temperature_values = [s['value'] for s in sensors if s['sensor_id'] == temperature_id]
+```
+**This first line "filters" the data collected and collects the value of each entry where the id matches the temperature id, creating a list of temperature readings from the dataset.**
+
+```.py
+index_data = [datetime.strptime(s['datetime'][:16], "%Y-%m-%dT%H:%M") for s in sensors if s['sensor_id'] == temperature_id]
+```
+**This line gets the time and converts with the temperature readings. It makes sure the datetime format is the same, matching the first 16 characters pf the datetime string.**
+
+```.py
+humidity_list = [s['value'] for s in sensors if s['sensor_id'] == humidity_id]
+    # humidity_index = [datetime.strptime(s['datetime'][:16], "%Y-%m-%dT%H:%M") 
+```
+**Similar to the temperature data, this line filters for humidity data based on the humidity_id and creates a list of humidity readings.**
+
+```.py
+time = [0] + [(index_data[i] - index_data[0]).seconds for i in range(1, len(index_data))]
+```
+**Here, the list of the time values in seconds is created. The first time value is defined as 0 to represent the start time. For each timestamp, the difference from the first one is calculated.**
+```.py
+df = pd.DataFrame({'Time (s)':time,'Humidity (%)':humidity_list,'Temperature (ºC)':temperature_values}, index=index_data)
+```
+**Here, a pandas dataframe is creayed to oragnize the data.**
 ```.py
 else:
     print('Local data')
@@ -426,6 +453,7 @@ else:
     df.index = time_local
     data_label = 'Local Data'
 ```
+**The part of the code above checks the condition, and execute the else if the condition is false. It prints "Local data" and then reads the CSV file named Data_20241206100513.csv into a Pandas DataFrame. A datetime index is created using pd.date_range, starting from a specified start_datetime, spanning the number of rows in the DataFrame, and incrasing by 2 seconds (freq='2s'). Finally, the variable data_label is set to "Local Data" to label the data source.**
 
 ```.py
 choose_measure = input("Select measure (T)emperature (default) or (H)umidity: \n")
@@ -446,10 +474,12 @@ choose = input("Select a graph: \n"
                "\tG-Quatric Model for next 12 hours\n"
                )
 ```
+**This part of the code requires the user to select the measurement they want and assign to the corresponding column, then asks the person to choose one of all the graphing options by entering the proper letter for the option.**
 
 ```.py
 subsequent_time = pd.date_range(start= df.index[-1], periods = 12*60*30, freq='2s')
 ```
+**The code creates a DatetimeIndex called subsequent_time using the pd.date_range function from pandas. It starts from the last timestamp in the DataFrame df(df.index[-1]), generating a total of 12 * 60 * 30 time (corresponding to 30 hours at 2-second intervals). This results in a time series that continues from the end of the DataFrame's index, with a total duration of 30 hours.**
 
 ```.py
 if choose.upper() == 'A':
@@ -461,6 +491,8 @@ if choose.upper() == 'A':
 
 ![Local_Humidity_Original](https://github.com/user-attachments/assets/fe927ed4-fb8b-47ba-9fbc-03d0513e15dd)
 
+**The code checks if the variable choose, converted to uppercase, is equal to 'A'. If its true, it uses Matplotlib to plot the data from a specific column of a DataFrame in red. It also adds a legend to the plot with the label 'Original'.**
+
 ```.py
 elif choose.upper() == 'B':
     # Averaged
@@ -471,6 +503,8 @@ elif choose.upper() == 'B':
 
 ![Local_Humidity_Averaged](https://github.com/user-attachments/assets/fdaaef7a-3130-4161-bf40-c84bc11f5a5f)
 
+**The code checks if the variable choose, converted to uppercase, is equal to 'B'. If its true, it calculates the moving average of the specific column in the dataframe using the defined window_size. The moving average smooths the data by averaging values within the window. The resulting averaged data is then plotted as a black line using Matplotlib, and a legend labeled 'Averaged' is added to the plot.**
+
 ```.py
 elif choose.upper() == 'C':
     # Standard Deviation Temperature
@@ -480,6 +514,8 @@ elif choose.upper() == 'C':
 ![Local_Temperature_Std](https://github.com/user-attachments/assets/efabfd1a-f5ad-48ba-8592-8160ae1d76c5)
 
 ![Local_Humidity_Std](https://github.com/user-attachments/assets/5f91c7da-2191-4c24-a498-5b9497915688)
+
+**The code checks if the user's input, variable choose is "C". If its true, it calculates the moving standard deviation of a specific column in the DataFrame using the window_size. Then, it plots the moving standard deviation values in blue 'b' and shows a legend labeled "Standard Deviation" on the plot.**
 
 ```.py
 elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or choose.upper() == 'G':
@@ -495,6 +531,7 @@ elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or 
     subsequent_time = pd.date_range(start=time_local[-1], periods=12 * 60 * 30, freq='2s')
     t = [2 * i for i in range(12 * 60 * 30)]
 ```
+**The code checks if the variable choose shows to letters ('D', 'E', 'F', or 'G'), and based on further conditions, it proceeds either a quadratic or quatric polynomial model to the data in a specified column using np.polyfit. A quadratic model is selected if choose is 'D' or 'F', while a quatric model is used for 'E' or 'G'. The resulting polynomial model is then used to predict values over the time of data collected, 12 hours at 2-second intervals, with time represented in seconds.**
 
 ```.py
  if choose.upper() == 'D':
@@ -507,6 +544,8 @@ elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or 
 
 ![Local_Humidity_Quadratic](https://github.com/user-attachments/assets/d4c42e8d-530a-4fc4-b45a-bedd7e1a6247)
 
+**The code checks if the user input is 'D', selecting the quadratic model. If its true, it plots two lines on a graph using matplotlib: the original data from the specified column in red and the quadratic model in green. It then adds a legend showing the labels for both the original data and the quadratic model equation.**
+
 ```.py
     elif choose.upper() == 'E':
         # Quatric Model
@@ -518,6 +557,7 @@ elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or 
 
 ![Local_Humidity_Quatric](https://github.com/user-attachments/assets/19e0ea57-7783-440e-a45b-20ff94481c27)
 
+**The code checks if the user input is 'E', selecting the quatric model. If its true, it plots two lines on a graph using matplotlib: the original data from the specified column in red and the quadtric model in green. It then adds a legend showing the labels for both the original data and the quatric model equation.**
 
 ```.py
  elif choose.upper() == 'F':
@@ -529,6 +569,8 @@ elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or 
 
 ![Local_Humidity_Quadratic_Next12h](https://github.com/user-attachments/assets/8d91fe85-43a0-47df-b1af-d3197a596833)
 
+**The code checks if the user input is 'F', selecting the quadratic model prediction for the next 12 hours. If its true, it plots the quadratic model line predicting the next 12 hours of data.**
+
 ```.py
     elif choose.upper() == 'G':
         # Quatric Model for next 12 hours
@@ -539,10 +581,14 @@ elif choose.upper() == 'D' or choose.upper() == 'E' or choose.upper() == 'F' or 
 
 ![Local_Humidity_Quatric_Next12h](https://github.com/user-attachments/assets/a5bd62cd-c179-45a3-a2b2-4e71243d1dae)
 
+**The code checks if the user input is 'G', selecting the quatric model prediction for the next 12 hours. If its true, it plots the quatric model line predicting the next 12 hours of data.**
+
 ```.py
 else:
     print('No available option was chose. Ending!')
 ```
+**This code checks if the previous condition is true, if not, then the command else is executed and it prints "No available option was chose. Ending!"**
+
 ```.py
 plt.grid()
 plt.xticks(rotation=45)
@@ -551,9 +597,10 @@ plt.ylabel(df.columns[col])
 plt.title(data_label)
 plt.show()
 ```
-## Overall Conclusion
 
-I WILL EDIT
+**The code above is used to customize and show the plots using Matplotlib. It enables the grid, rotates the x-axis labels by 45 degrees, and sets the labels for the x-axis and y-axis. The plot’s title is set to a string stored in data_label, and finally, the plot is displayed using plt.show().**
+
+## Overall Conclusion
 
 When analyzing the graphs, we noticed that the temperature in the cabbage fields varied between -4°C and 10°C, while the relative humidity fluctuated between 90% and 30%. Scientifically, it is known that most cabbage varieties (genus Brassica oleracea) can withstand short periods of frost, with minimum temperatures of -6°C, and some specific varieties can tolerate up to -10°C. However, prolonged exposure to temperatures below -5°C, for periods of 30 to 60 days, can be highly damaging, directly affecting plant development and crop quality. This is because these conditions can induce the process of early formation of flower stalks (called bolting), reducing the commercial value of the final product. Ideal cabbage growth occurs at an average daily temperature of around 17°C. According to studies, the temperature range considered ideal for cabbage development is 10°C to 24°C, with temperatures above 24°C slowing down development and increasing the risk of defects such as cracking and loss of firmness in cabbage heads. As for humidity, the ideal range for growing cabbage is between 60% and 90%. The graphs analyzed indicate that, for most of the time, relative humidity remained within suitable limits for the crop, especially at night, when levels tend to be higher. Studies show that humidity below 50% can increase transpiration and reduce the efficiency of water use by plants, while humidity above 90% for long periods favors the development of fungal diseases such as Alternaria and Peronospora brassicae. Based on this data, it is possible to conclude that the main focus should be on monitoring and controlling temperature, as it is the most critical factor for the health and performance of cabbage crops. To prevent damage, it is recommended to implement thermal control systems in greenhouses, such as heating on cold nights and adequate ventilation on hot days. In addition, automated monitoring systems can help maintain optimum temperature and humidity levels, thus ensuring a high-quality harvest. These recommendations are in line with modern agricultural research into the physiological needs of cabbage and with management strategies in regions with similar climatic variations.
 
