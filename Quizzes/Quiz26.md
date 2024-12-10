@@ -33,6 +33,7 @@ d = {'q1':True,'q2':False,'q3':True, 'q4':True}
 print(flip(d))
 ```
 ![Captura de tela 2024-12-10 051532](https://github.com/user-attachments/assets/e780e5a1-6e67-431f-82a3-86331d205519)
+
 ![Captura de tela 2024-12-10 051548](https://github.com/user-attachments/assets/3e579302-f9df-43ab-a53e-2a32f49af7b7)
 
 
