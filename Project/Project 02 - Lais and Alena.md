@@ -149,13 +149,13 @@ Knowledge questions arise regarding the:
 # Criteria C: Development
 
 ## List of techniques used
-01. For Loop - 
-02. While Loop - 
-03. If/Else Statements - 
-04. Functions - 
-05. Lists and Dictionaries -
+01. For Loop 
+02. While Loop  
+03. If/Else Statements  
+04. Functions 
+05. Lists and Dictionaries 
 06. Libraries:
-    * Comma Separated Values (CSV) Files -
+    * Comma Separated Values (CSV) Files 
     * Serial Communication
     * Application Programming Interface (API)
     * Pandas
@@ -164,8 +164,8 @@ Knowledge questions arise regarding the:
     * Requests
     * Numpy
     * DHT Sensor Library (Library used in Arduino) 
-07.Try and Accept Commands - 
-08.Registering and Login into API -
+07.Try and Accept Commands 
+08.Registering and Login into API 
 
 ## List of Libraries Used
 
@@ -250,7 +250,9 @@ void loop() {
 
 ## Code from Pycharm
 
-**Success Criteria: As seen in the success criteria, **
+**Success Criteria: As seen in the success criteria, the criteria 2 states that the local variables will be measured using a set of 2 sensors placed outside. One focused on collecting the temperature values and one focused on collecting the humidity data. On code, we demonstrate the sensors being used, connecting them to the arduino, collecting the data and meeting the criteria 2.**
+
+ **```(SL)```The Local samples are stored in a csv file and ```(HL)``` posted to the remote server as a backup.**
 
 ### Code 1: Registering the sensors
 **When using the Pycharm, we identified the need to be able to connect with our remote server in order to back up our data. As you can see in the following code, the register of the sensors is made:**
@@ -372,6 +374,15 @@ arduino.close()
 
 
 ### Code 3: Graphs and Visual Representation
+
+**Success Criteria:
+
+The solution provides a mathematical modelling for the Humidity and Temperature levels for each Local and Remote locations. ```(SL: linear model)```, ```(HL: non-lineal model)```**
+
+**The solution provides a comparative analysis for the Humidity, Temperature (HL) levels for each Local and Remote locations including mean, standard deviation, minimum, maximum, and median.**
+   
+**The solution provides a prediction for the subsequent 12 hours for Humidity, and Temperature (HL).**
+   
 
 ```.py
 from matplotlib import pyplot as plt
@@ -606,8 +617,13 @@ When analyzing the graphs, we noticed that the temperature in the cabbage fields
 
 ## Scientific Poster
 
+**Success Criteria:  The solution includes a poster summarizing the visual representations, model and analysis created. The poster includes a recommendation about healthy levels for Humidity, and Temperature(HL).**
+
 ![1  Temperature and humidity data collection Using the Arduino and the DHT 11 sensor, we measured the temperature and humidity  The laptop and Arduino are placed on the windowsill so that the DHT 1](https://github.com/user-attachments/assets/0f10426a-66bc-43ac-8a49-ddd443ccf419)
 
 # Criteria D: Functionality
 
-A 7 min video demonstrating the proposed solution with narration
+A 7 min video demonstrating the proposed solution with narration]
+
+https://drive.google.com/drive/u/0/folders/1Vmt5poIBZQk42bdr8IFr16wJ1rlkdA-J
+
